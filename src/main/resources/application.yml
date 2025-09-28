@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: stock-sync-service
+
+  # data config - H2 --- recommend MySQL/PostgreSQL for production
+  datasource:
+    url: jdbc:h2:mem:stocksync;DB_CLOSE_DELAY=-1
+    username: sa
+    password: ""
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  # H2 console - (http://localhost:8080/h2-console)
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+vendor:
+  a:
+    url: http://localhost:8080/mock/vendor-a/stock  # Vendor A API address
+#    url: http://localhost:8080/mock/vendor-a/stock/unreliable  # for retry
+    timeout: 5000
+  b:
+    file-path: /tmp/vendor-b/stock.csv              # Vendor B CSV file path
+
+stock:
+  sync:
+    interval: 60000  # sync interval(milliseconds) - 1 minute
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.stocksync: INFO
+    org.hibernate.SQL: DEBUG
