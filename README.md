@@ -1,6 +1,6 @@
 # Stock Sync Service
 
-Spring Boot microservice that syncs product stock from multiple vendors.
+Spring Boot microservice that synchronizes product stock from multiple vendors.
 
 ## 🚀 Quick Start
 
@@ -8,8 +8,8 @@ Spring Boot microservice that syncs product stock from multiple vendors.
 ```bash
 
 # 1. Unzip and run
-unzip stock-sync-solution.zip
-cd stock-sync-solution
+git clone https://github.com/qingfan007/stock-sync.git
+cd stock-sync
 mvn spring-boot:run
 
 # 2. Test it works (new terminal)
@@ -57,17 +57,8 @@ curl http://localhost:8080/api/products
 # Run all tests
 mvn test
 ```
-### 2. Monitor Real-time Operation
-#### Watch console logs for:
-- Auto-created sample CSV file
-- Vendor API calls and retries
-- Out-of-stock alerts
-- Sync completion summaries
-
-### 3. View Database
-- URL: http://localhost:8080/h2-console
-- JDBC: jdbc:h2:mem:stocksync
-- Username: sa (no password)
+- Console logs show vendor sync attempts, retries, CSV auto-generation, out-of-stock alerts.
+- Database can be inspected via H2 console.
 
 ## 🏗 Design Highlights
 ### Architecture
@@ -76,38 +67,20 @@ mvn test
 - Error Handling: Graceful degradation, detailed logging
 - 
 ### Data Model Design
-- SKU Handling: Same SKU can exist across vendors, application uses (sku + vendor) as business key
-- Current Implementation: Uniqueness enforced at application layer through service logic
-- Production Enhancement: Can add `@UniqueConstraint(columnNames = {"sku", "vendor"})` for database-level integrity
-- Real-world Alignment: Fully supports the business requirement of same SKU across suppliers
+- Business Key: (sku + vendor) ensures uniqueness
+- Uniqueness currently enforced at service layer
+- Ready for DB-level constraint via @UniqueConstraint
 
 ### Production Ready Features
-- Health Check: http://localhost:8080/health
+- Health Check: /health
 - Comprehensive Tests: Core logic and API endpoints
 - Containerized: Full Docker support
 
-## 🎯 Design Decisions & Trade-offs
-### Assumptions Made
-- Data Scale: Optimized for hundreds of products per vendor
-- Sync Frequency: 1-minute intervals balance data freshness and system load
-- Vendor Reliability: Built retry mechanisms assuming temporary API failures
-- Concurrency: Single instance deployment, no distributed lock needed for current scale
-
-### Technical Trade-offs
-- H2 Database: Chosen for evaluation simplicity over production databases
-- In-Memory Processing: Suitable for current scale, prepared for batch processing
-- Log-based Alerts: Immediate visibility vs. persisted event storage
-- Synchronous Processing: Meets current requirements, async pattern prepared for scaling
-
-### Production Readiness
-- Easy Database Switch: Configuration ready for PostgreSQL/MySQL
-- Monitoring Ready: Structured logs for alert integration
-- Extension Points: Clear patterns for adding new vendors and features
-
-### Focus Areas
-- Delivered: All core requirements with production-quality code
-- Deferred: Advanced features like distributed caching, message queues
-- Designed For: Easy extension and maintenance
+## 🔮 Future Improvements
+- Distributed caching (e.g. Redis)
+- Message queues (e.g. Kafka) for async processing
+- Persisted out-of-stock event tracking
+- Multi-instance deployment with distributed locks
 
 ## 📊 Git History
 ```bash
@@ -115,11 +88,6 @@ mvn test
 git log --oneline
 # Shows progressive commits from setup to completion
 ```
-
-## 💡 For the Interview
-#### I'll walk through:
-- Out-of-stock detection logic
-- Retry mechanism for API failures
-- Easy extension for new vendors
-
-### Ready for technical discussion!
+## 📖 Documentation
+- Swagger UI: http://localhost:8080/swagger-ui/index.html
+- H2 Console: http://localhost:8080/h2-console
